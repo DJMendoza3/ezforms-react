@@ -24,15 +24,19 @@ interface FormProps {
 }
 
 export default function Form({ formStyle }: FormProps) {
-  const [errors, setErrors] = useState({
-    email: true,
-    password: true,
-  });
+  const [errors, setErrors] = useState({});
   const [submittable, setSubmittable] = useState(true);
   const location = useLocation();
   const { postRequest } = usePostRequest();
   const { getRequest } = useGetRequest();
   const { putRequest } = usePutRequest();
+
+  //build error object 
+  useEffect(() => {
+    formStyle.fields.forEach((field) => {
+      setErrors(prev => {return {...prev, [field.name]: false}});
+    });
+  }, [formStyle])
 
   //submit function
   useEffect(() => {
@@ -44,6 +48,10 @@ export default function Form({ formStyle }: FormProps) {
       console.log("input-form not found");
     }
   }, []);
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   //fetch for form population if edit
   useEffect(() => {
@@ -93,41 +101,20 @@ export default function Form({ formStyle }: FormProps) {
 
   //update submittable(if applicable) on change
   useEffect(() => {
-    if (!errors.email && !errors.password) {
-      setSubmittable(true);
-    } else {
+    if (Object.values(errors).includes(true)) {
       setSubmittable(false);
+    } else {
+      setSubmittable(true);
     }
   }, [errors]);
 
-  //only allow form to be submitted if all fields are filled in
-
-  function checkSubmittable() {
-    setSubmittable(true);
-
-    formStyle.fields.forEach((field) => {
-      const element = document.getElementById(field.name) as HTMLInputElement;
-      if (element) {
-        if (element.value === "") {
-          setSubmittable(false);
-        }
-      }
-    });
-  }
-  useEffect(() => {
-    document.addEventListener("input", checkSubmittable);
-
-    return () => {
-      document.removeEventListener("input", checkSubmittable);
-    };
-  }, []);
 
   return (
     <form id="input-form">
       {formStyle.fields.map((field) => (
         <div>
           {field.type === "text" ? (
-            <TextInput field={field} errors={errors} setErrors={setErrors} />
+            <TextInput field={field} setErrors={setErrors} />
           ) : field.type === "number" ? (
             <NumberInput field={field} />
           ) : field.type === "file" ? (

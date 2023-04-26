@@ -36,29 +36,31 @@ const useValueValidation = (id: string, validators: any[]) => {
 
 interface TextFieldProps {
   field: TextField;
-  errors: React.ComponentState;
   setErrors: React.Dispatch<
     React.SetStateAction<{ email: Boolean; password: Boolean }>
   >;
 }
 
-export function TextInput({ field, errors, setErrors }: TextFieldProps) {
+export function TextInput({ field, setErrors }: TextFieldProps) {
   const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
 
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
       {error && <p>{error}</p>}
-      {field.name === "password" && errors.password && (
-        <p>
-          Password must be at least 8 characters long and contain at least one
-          uppercase letter, one lowercase letter and one number
-        </p>
-      )}
-      {field.name === "email" && errors.email && (
-        <p>Please enter a valid email address</p>
-      )}
     </>
   );
 }
