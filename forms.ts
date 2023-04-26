@@ -11,6 +11,7 @@ import {
   BooleanField,
   DateField,
 } from "lib/ezforms-react/jsforms.fields";
+import { maxLengthValidator, requiredValidator } from "./jsforms.validators";
 
 class UserForm extends JSForm {
   static formType = "user";
@@ -27,7 +28,7 @@ class UserForm extends JSForm {
 class ItemForm extends JSForm {
     static formType = "item";
     static fields = [
-        new TextField("name", "Name", "your name here",[], "name"),
+        new TextField("name", "Name", "your name here",[maxLengthValidator(7), requiredValidator], "name"),
         new TextField("description", "Description", "your description here",[], "description"),
         new TextField("dimensions", "Dimensions", "your dimensions here",[], "dimensions"),
         new FileField("img", "Image",[], "img"),

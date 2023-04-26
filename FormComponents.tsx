@@ -9,6 +9,31 @@ import {
 
 import styles from "./formComponents.module.css";
 
+const useValueValidation = (id: string, validators: any[]) => {
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const input = document.getElementById(id) as HTMLInputElement;
+    if (input) {
+      input.addEventListener("input", () => {
+        let errorTriggered = false;
+        if (input.value !== null && input.value !== undefined) {
+          validators.map((validator) => {
+            if (validator(input.value) !== null) {
+              errorTriggered = true;
+              setError(validator(input.value));
+            } else if (errorTriggered === false) {
+              setError(null);
+            }
+          });
+        }
+      });
+    }
+  }, [id, validators]);
+
+  return error;
+};
+
 interface TextFieldProps {
   field: TextField;
   errors: React.ComponentState;
@@ -18,51 +43,13 @@ interface TextFieldProps {
 }
 
 export function TextInput({ field, errors, setErrors }: TextFieldProps) {
-  function usernameCheck() {
-    const emailElement = document.getElementById("email") as HTMLInputElement;
-    if (emailElement) {
-      emailElement.addEventListener("input", () => {
-        const emailRegex =
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (emailRegex.test(emailElement.value)) {
-          setErrors((prevState) => ({ ...prevState, email: false }));
-        } else {
-          setErrors((prevState) => ({ ...prevState, email: true }));
-        }
-      });
-    }
-  }
-
-  function passwordCheck() {
-    const passwordElement = document.getElementById(
-      "password"
-    ) as HTMLInputElement;
-    if (passwordElement) {
-      passwordElement.addEventListener("input", () => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-        if (passwordRegex.test(passwordElement.value)) {
-          setErrors((prevState) => ({ ...prevState, password: false }));
-        } else {
-          setErrors((prevState) => ({ ...prevState, password: true }));
-        }
-      });
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener("input", usernameCheck);
-    document.addEventListener("input", passwordCheck);
-
-    return () => {
-      document.removeEventListener("input", usernameCheck);
-      document.removeEventListener("input", passwordCheck);
-    };
-  }, []);
+  const error = useValueValidation(field.name, field.validators);
 
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
       {field.name === "password" && errors.password && (
         <p>
           Password must be at least 8 characters long and contain at least one
@@ -81,10 +68,12 @@ interface NumberFieldProps {
 }
 
 export function NumberInput({ field }: NumberFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
     </>
   );
 }
@@ -96,6 +85,7 @@ interface MultiSelectFieldProps {
 export function MultiSelectInput({ field }: MultiSelectFieldProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const inventory = useAppSelector((state) => state.item.inventory);
+  const error = useValueValidation(field.name, field.validators);
 
   const toggleOption = (name: string) => {
     setSelected((prevSelected) => {
@@ -143,11 +133,12 @@ export function MultiSelectInput({ field }: MultiSelectFieldProps) {
                 </li>
               );
             } else {
-              return(<></>);
+              return <></>;
             }
           })}
         </ul>
       </div>
+      {error && <p>{error}</p>}
     </>
   );
 }
@@ -157,10 +148,12 @@ interface FileFieldProps {
 }
 
 export function FileInput({ field }: FileFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
     </>
   );
 }
