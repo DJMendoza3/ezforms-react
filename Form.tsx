@@ -6,17 +6,10 @@ import {
   usePutRequest,
 } from "hooks/customHooks";
 import { UserForm, ItemForm, WarehouseForm, JobForm, TruckForm } from "./forms";
-import { TextInput, MultiSelectInput, FileInput, NumberInput } from "./FormComponents";
+import { TextInput, MultiSelectInput, FileInput, NumberInput, SelectInput } from "./FormComponents";
 
 //A generic form component that takes in a list of fields and creates the inputs and labels via map probebly
 //use a generic fetch component that modulates depending on the inputs
-
-//interfeace for fields
-interface Field {
-  name: string;
-  type: string;
-  label: string;
-}
 
 //interface for props
 interface FormProps {
@@ -116,11 +109,13 @@ export default function Form({ formStyle }: FormProps) {
           {field.type === "text" ? (
             <TextInput field={field} setErrors={setErrors} />
           ) : field.type === "number" ? (
-            <NumberInput field={field} />
+            <NumberInput field={field} setErrors={setErrors} />
           ) : field.type === "file" ? (
-            <FileInput field={field} />
+            <FileInput field={field} setErrors={setErrors} />
           ) : field.type === "multiselect" ? (
-           <MultiSelectInput field={field}/>
+           <MultiSelectInput field={field}setErrors={setErrors}/>
+          ) : field.type === "select" ? (
+            <SelectInput field={field} setErrors={setErrors} />
           ) : (
             <></>
           )}

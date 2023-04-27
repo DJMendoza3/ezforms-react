@@ -57,6 +57,7 @@ class BooleanField extends FormField {
 }
 
 class SelectField extends FormField {
+    public type = 'select';
     public options: string[];
 
     constructor(name: string, label: string, options: string[], validators: any[] = [], id: string) {

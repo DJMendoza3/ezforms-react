@@ -5,6 +5,7 @@ import {
   NumberField,
   MultiSelectField,
   FileField,
+  SelectField,
 } from "lib/ezforms-react/jsforms.fields";
 
 import styles from "./formComponents.module.css";
@@ -36,9 +37,7 @@ const useValueValidation = (id: string, validators: any[]) => {
 
 interface TextFieldProps {
   field: TextField;
-  setErrors: React.Dispatch<
-    React.SetStateAction<{ email: Boolean; password: Boolean }>
-  >;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
 }
 
 export function TextInput({ field, setErrors }: TextFieldProps) {
@@ -67,10 +66,23 @@ export function TextInput({ field, setErrors }: TextFieldProps) {
 
 interface NumberFieldProps {
   field: NumberField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-export function NumberInput({ field }: NumberFieldProps) {
+export function NumberInput({ field, setErrors }: NumberFieldProps) {
   const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
@@ -82,12 +94,25 @@ export function NumberInput({ field }: NumberFieldProps) {
 
 interface MultiSelectFieldProps {
   field: MultiSelectField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-export function MultiSelectInput({ field }: MultiSelectFieldProps) {
+export function MultiSelectInput({ field, setErrors }: MultiSelectFieldProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const inventory = useAppSelector((state) => state.item.inventory);
   const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
 
   const toggleOption = (name: string) => {
     setSelected((prevSelected) => {
@@ -106,6 +131,7 @@ export function MultiSelectInput({ field }: MultiSelectFieldProps) {
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>
+      <input type="hidden" id={field.name} name={field.name} value={selected} />
       <div className={styles["dropdown"]}>
         <div className={styles["dropdown__selected"]}>
           <div>
@@ -145,12 +171,102 @@ export function MultiSelectInput({ field }: MultiSelectFieldProps) {
   );
 }
 
-interface FileFieldProps {
-  field: FileField;
+interface SelectFieldProps {
+  field: SelectField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
 }
 
-export function FileInput({ field }: FileFieldProps) {
+//input field for single select component with dropdown and validation
+export function SelectInput({ field, setErrors }: SelectFieldProps) {
+  const [selected, setSelected] = useState<string | undefined>(undefined);
+  const inventory = field.options;
   const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
+  const toggleOption = (name: string) => {
+    setSelected((prevSelected) => {
+      // if it's in, remove
+      if (prevSelected === name) {
+        return undefined;
+        // else, add
+      } else {
+        return name;
+      }
+    });
+  };
+
+  return (
+    <>
+      <label htmlFor={field.name}>{field.label}</label>
+      <input type="hidden" id={field.name} name={field.name} value={selected} />
+      <div className={styles["dropdown"]}>
+        <div className={styles["dropdown__selected"]}>
+          <div>
+            {selected && (
+              <button
+                onClick={() => toggleOption(selected)}
+                className={styles["selected-item"]}
+              >
+                {selected}
+              </button>
+            )}
+          </div>
+        </div>
+        <ul className={styles["dropdown__options"]}>
+          {inventory.map((option) => {
+            const isSelected = selected === option;
+
+            if (!isSelected) {
+              return (
+                <li
+                  className={styles["dropdown__option"]}
+                  onClick={() => toggleOption(option)}
+                >
+                  <span>{option}</span>
+                </li>
+              );
+            } else {
+              return <></>;
+            }
+          })}
+        </ul>
+      </div>
+      {error && <p>{error}</p>}
+    </>
+  );
+}
+
+interface FileFieldProps {
+  field: FileField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
+}
+
+export function FileInput({ field, setErrors }: FileFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
   return (
     <>
       <label htmlFor={field.name}>{field.label}</label>

@@ -14,6 +14,27 @@ const maxLengthValidator = (max: number) => {
     }
 }
 
+const numberRangeValidator = (min: number, max: number) => {
+    return function(value: string | number) {
+        if(typeof value === 'string') {
+            value = parseInt(value);
+        }
+        if (value < min || value > max) {
+            return `Must be between ${min} and ${max} characters`;
+        }
+        return null;
+    }
+}
+
+const customRegexValidator = (regex: RegExp) => {
+    return function(value: string) {
+        if (!regex.test(value)) {
+            return 'Invalid value';
+        }
+        return null;
+    }
+}
+
 const requiredValidator = (value: string) => {
     if (value.length === 0) {
         return 'Required';
@@ -38,4 +59,12 @@ const passwordValidator = (value: string) => {
     return null;
 }
 
-export {lengthValidator, maxLengthValidator, requiredValidator, emailValidator, passwordValidator};
+const urlValidator = (value: string) => {
+    const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    if (!urlRegex.test(value)) {
+        return 'Invalid url';
+    }
+    return null;
+}
+
+export {lengthValidator, maxLengthValidator, requiredValidator, emailValidator, passwordValidator, numberRangeValidator, customRegexValidator, urlValidator};
