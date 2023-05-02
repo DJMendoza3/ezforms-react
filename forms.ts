@@ -56,7 +56,6 @@ class WarehouseForm extends JSForm {
     static fields = [
         new TextField("name", "Name", "your name here",[], "name"),
         new TextField("address", "Address", "your address here",[], "address"),
-        new SelectField("type", "Type", ["warehouse", "truck", "job"],[], "type"),
         new MultiSelectField("stock", "Stock", [],[], "stock")
     ];
 }

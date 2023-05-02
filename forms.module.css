@@ -1,0 +1,114 @@
+/* 
+    Default Theme
+ */
+
+.dropdown{
+    font-family: 'Roboto', sans-serif;
+    position:relative;
+    width:80%;
+}
+.dropdown:hover > .dropdown__options{
+    display:block;
+}
+
+.dropdown__selected{
+    border:solid 1px #eee;
+    font-size:14px;
+    padding:10px;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown__options{
+    display:none;
+    position: absolute;
+    background-color: grey;
+    width:100%;
+    list-style: none;
+    border:solid 1px #eee;
+    padding:5px 0px;
+    height: 200px;
+    overflow-y: scroll;
+    z-index: 3;
+}
+
+.dropdown__option{
+    display:flex;
+    align-items: center;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+.dropdown__option:hover{
+    background-color: #eee;
+}
+
+.dropdown__option-checkbox{
+    margin-right:6px;
+}
+.selected-item {
+    border: solid black 2px;
+    color: black;
+    background: none;
+    padding: 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+/* forms */
+form {
+    /* form vars */
+    --color-light: #f7f9fc;
+    --color-dark: #212121;
+    --color-signal: #212121;
+  
+    --color-background: var(--color-light);
+    --color-text: var(--color-dark);
+    --color-accent: var(--color-signal);
+  
+    --size-bezel: 0.5rem;
+    --size-radius: 4px;
+  
+    /* form styles */
+    line-height: 1.4;
+    font-size: calc(0.6rem + 0.4vw);
+    color: var(--color-text);
+    font-weight: 300;
+    padding: 0 calc(var(--size-bezel) * 3);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--size-bezel) * 2);
+    width: 100%;
+  }
+  .form-control {
+    position: relative;
+  }
+  input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border: 3px solid currentColor;
+    padding: calc(var(--size-bezel) * 1.5) var(--size-bezel);
+    color: currentColor;
+    background: transparent;
+    border-radius: var(--size-radius);
+  }
+    input[type=text] + label {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: calc(var(--size-bezel) * 0.75) calc(var(--size-bezel) * 0.5);
+    margin: calc(var(--size-bezel) * 0.75 + 3px) calc(var(--size-bezel) * 0.5);
+    white-space: nowrap;
+    transform: translate(0, 0);
+    transform-origin: 0 0;
+    transition: transform 120ms ease-in;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+  input[type=text] + .active {
+    transform: translate(0.25rem, -65%) scale(0.8);
+    color: var(--color-accent);
+    background-color: var(--color-background);
+  }

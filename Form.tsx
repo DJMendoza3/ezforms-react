@@ -8,6 +8,7 @@ import {
 import { UserForm, ItemForm, WarehouseForm, JobForm, TruckForm } from "./forms";
 import { TextInput, MultiSelectInput, FileInput, NumberInput, SelectInput } from "./FormComponents";
 
+import styles from "./forms.module.css";
 //A generic form component that takes in a list of fields and creates the inputs and labels via map probebly
 //use a generic fetch component that modulates depending on the inputs
 
@@ -101,11 +102,32 @@ export default function Form({ formStyle }: FormProps) {
     }
   }, [errors]);
 
+  useEffect(() => {
+    const inputs = document.querySelectorAll("input");
+    inputs.forEach((input) => {
+      input.addEventListener("input", (event) => toggleLabel(event));
+    });
+  }, []);
+
+
+
+  function toggleLabel(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const label = document.getElementById(`${target.name}-label`);
+    if (label && target.type === 'text') {
+      if (target.value.length > 0) {
+        label.className = styles["active"];
+      } else {
+        label.className = styles[""];
+      }
+    }
+  }
+
 
   return (
     <form id="input-form">
       {formStyle.fields.map((field) => (
-        <div>
+        <div className={styles["form-control"]}>
           {field.type === "text" ? (
             <TextInput field={field} setErrors={setErrors} />
           ) : field.type === "number" ? (

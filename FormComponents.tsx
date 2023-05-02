@@ -6,9 +6,14 @@ import {
   MultiSelectField,
   FileField,
   SelectField,
+  DateField,
+  BooleanField,
+  RadioField,
+  CheckboxField,
+  TextAreaField,
 } from "lib/ezforms-react/jsforms.fields";
 
-import styles from "./formComponents.module.css";
+import styles from "./forms.module.css";
 
 const useValueValidation = (id: string, validators: any[]) => {
   const [error, setError] = useState<string | null>(null);
@@ -57,8 +62,10 @@ export function TextInput({ field, setErrors }: TextFieldProps) {
 
   return (
     <>
-      <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
+      <label htmlFor={field.name} id={`${field.name}-label`}>
+        {field.label}
+      </label>
       {error && <p>{error}</p>}
     </>
   );
@@ -253,6 +260,64 @@ interface FileFieldProps {
 }
 
 export function FileInput({ field, setErrors }: FileFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
+  return (
+    <>
+      <label htmlFor={field.name}>{field.label}</label>
+      <input type={field.type} name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
+    </>
+  );
+}
+
+interface TextAreaFieldProps {
+  field: TextAreaField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
+}
+
+export function TextAreaInput({ field, setErrors }: TextAreaFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
+  return (
+    <>
+      <label htmlFor={field.name}>{field.label}</label>
+      <textarea name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
+    </>
+  );
+}
+
+interface CheckboxFieldProps {
+  field: CheckboxField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
+}
+
+export function CheckboxInput({ field, setErrors }: CheckboxFieldProps) {
   const error = useValueValidation(field.name, field.validators);
 
   useEffect(() => {
