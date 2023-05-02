@@ -8,7 +8,6 @@ import {
   SelectField,
   DateField,
   BooleanField,
-  RadioField,
   CheckboxField,
   TextAreaField,
 } from "lib/ezforms-react/jsforms.fields";
@@ -336,6 +335,64 @@ export function CheckboxInput({ field, setErrors }: CheckboxFieldProps) {
     <>
       <label htmlFor={field.name}>{field.label}</label>
       <input type={field.type} name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
+    </>
+  );
+}
+
+interface BooleanFieldProps {
+  field: BooleanField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
+}
+
+export function BooleanInput({ field, setErrors }: BooleanFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
+  return (
+    <>
+      <label htmlFor={field.name}>{field.label}</label>
+      <input type="checkbox" name={field.name} id={field.name} />
+      {error && <p>{error}</p>}
+    </>
+  );
+}
+
+interface DateFieldProps {
+  field: DateField;
+  setErrors: React.Dispatch<React.SetStateAction<{}>>;
+}
+
+export function DateInput({ field, setErrors }: DateFieldProps) {
+  const error = useValueValidation(field.name, field.validators);
+
+  useEffect(() => {
+    if (error) {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: true };
+      });
+    } else {
+      setErrors((prev) => {
+        return { ...prev, [field.name]: false };
+      });
+    }
+  }, [error, field.name, setErrors]);
+
+  return (
+    <>
+      <label htmlFor={field.name}>{field.label}</label>
+      <input type={field.type} name={field.name} id={field.name} value={new Date().toJSON().slice(0, 10)} min={field.minDate} max={field.maxDate} />
       {error && <p>{error}</p>}
     </>
   );

@@ -39,10 +39,14 @@ class NumberField extends FormField {
 class DateField extends FormField {
     public type = 'date';
     public placeholder: string;
+    public minDate?: Date;
+    public maxDate?: Date;
 
-    constructor(name: string, label: string, placeholder: string, validators: any[] = [], id: string) {
+    constructor(name: string, label: string, placeholder: string, validators: any[] = [], id: string, minDate?: Date, maxDate?: Date) {
         super(name, label, validators, id);
         this.placeholder = placeholder;
+        this.minDate = minDate;
+        this.maxDate = maxDate;
     }
 }
 
@@ -68,15 +72,6 @@ class SelectField extends FormField {
 
 class MultiSelectField extends FormField {
     public type = 'multiselect';
-    public options: string[];
-
-    constructor(name: string, label: string, options: string[], validators: any[] = [], id: string) {
-        super(name, label, validators, id);
-        this.options = options;
-    }
-}
-
-class RadioField extends FormField {
     public options: string[];
 
     constructor(name: string, label: string, options: string[], validators: any[] = [], id: string) {
